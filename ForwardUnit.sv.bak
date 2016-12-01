@@ -1,0 +1,38 @@
+module ForwardUnit (ReadRegister1, ReadRegister2, ExMemRd, MemWBRd,ExRegWrite, MemRegWrite ,ForwardA, ForwardB);
+	input logic [4:0]ReadRegister1, ReadRegister2, ExMemRd, MemWBRd;
+	input logic ExRegWrite, MemRegWrite;
+	output logic [1:0]ForwardA, ForwardB;
+
+	
+	always_comb begin
+		//Test if there's data hazard for Register A 
+		// Forwarding value to Register A from ExMem stage
+		if (ExMemRd && (ExMemRd != 5'd31) && (ExMemRd == ReadRegister1))
+			ForwardA = 2'b10;
+		
+	   // Forwarding value to Register A from MemWB stage
+		else if (MemWBRd && (MemWBRd != 5'd31) && (MemWBRd == ReadRegister1))
+			ForwardA = 2'b01;
+			
+		//No forwarding
+		else
+			ForwardA = 2'b00;
+		
+		
+		//Test if there's data hazard for Register A 
+		// Forwarding value to Register B from ExMem stage
+		if (ExMemRd && (ExMemRd != 5'd31) && (ExMemRd == ReadRegister2))
+			ForwardB = 2'b10;
+					
+		// Forwarding value to Register B from MemWB stage
+		else if (MemWBRd && (MemWBRd != 5'd31) && (MemWBRd == ReadRegister2))
+			ForwardB = 2'b01;
+		
+		//No forwarding
+		else
+			ForwardB = 2'b00;
+	
+	end
+	
+	endmodule
+
